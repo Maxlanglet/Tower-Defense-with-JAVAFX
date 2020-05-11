@@ -1,0 +1,100 @@
+@startuml
+!define DARKBLUE
+!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+' your UML '
+scale 0.6
+
+Waves o-- "*" PNJ
+
+PNJ "1"*--"1" HealthBar : has
+PNJ "1"*--"1" path : has
+(PNJ, path) ... HealthBar
+
+PNJ <|--- LightEnemy
+PNJ <|--- HeavyEnemy
+
+class Waves{
+    - pnjs : ArrayList<PNJ>
+    - wave_num : int
+    - mult_num : int
+    - stackPane : StackPane
+    - grid : grid
+    - labels : Ressources
+    - isGameOver : boolean
+    - timer : Timeline
+    "constructor" Waves(stackPane : StackPane, grid : grid, labels : Ressources)
+    - update()
+    - spawn_wave()
+    - spawn_Light_Enemy()
+    - spawn_Heavy_Enemy()
+    - isNewWave()
+    + setGameOver()
+    + newGame()
+}
+
+class path{
+    - X : List<Integer>
+    - Y : List<Integer>
+    - X2 : List<Integer>
+    - Y2 : List<Integer>
+    - pathTransition : PathTransition
+    - PNJpath : Path
+    - r : Random
+    - random : int
+    - path12 : int
+    - repositionX : int
+    - repositionY : int
+    - duration : Duration
+    "constructor" path(duration : Duration, ressources : Ressources)
+    "constructor" path( repositionX : double, repositionY : double, path12 : int, duration : Duration, ressources : Ressources)
+    + setNode(node : Node)
+    + newLevel()
+    + size() : int
+}
+
+abstract class PNJ {
+    # health : HealthBar
+    # healthpath : path
+    # isAlive : boolean
+    # path : path
+    # dammage : int
+    # sante : double
+    # duration : Duration
+    # ressources : int
+    # pane : Pane
+    # hitbox : ImageView
+    # spawnx : double
+    # spawny : double
+    # wave : Waves
+    # lables : Ressources
+    # stackPane : StackPane
+    - timer : Timeline
+    "constructor" PNJ(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+    + setPause()
+    + setPlay()
+    + isInvisible() : boolean
+    + update()
+    + isDead() : boolean
+    + doDamage()
+    + removePNJ()
+    + setDead()
+}
+
+class LightEnemy{
+    "constructor" LightEnemy(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+}
+
+class HeavyEnemy{
+    "constructor" HeavyEnemy(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+}
+
+
+class HealthBar{
+    - rectInt : Rectangle
+    - innerWidth : double
+    "constructor" HealthBar(path : path)
+    + getDammage(value : double)
+    + getHealth() : double
+}
+
+@enduml

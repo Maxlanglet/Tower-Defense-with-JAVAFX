@@ -1,0 +1,485 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+!define DARKBLUE
+!includeurl https://raw.githubusercontent.com/Drakemor/RedDress-PlantUML/master/style.puml
+' your UML '
+skinparam classAttributeIconSize 0
+
+scale 0.4
+hide stereotype
+skinparam rectangle {
+FontSize 12
+StereotypeFontSize 12
+FontStyle bold
+}
+
+contextMenu - Ressources
+Tower - contextMenu
+grid -- contextMenu
+
+
+Myapp "1" *-- "1" MainMenu : has
+
+MainMenu "1" *-- "1" music : has
+
+grid "1" *-- "1" Ressources : has
+
+MainMenu "1"*--"1" grid
+grid "1" *-- "1" menuBar : has
+
+grid -- Pause
+
+MainMenu -- Pause
+
+
+grid -- Waves
+Waves *-- Ressources
+
+Waves o-- "*" PNJ
+grid -- path
+
+Waves -- GameOver
+MainMenu -- GameOver
+
+GameOver -- Sauvegarde
+
+MainMenu --- Sauvegarde
+
+PNJ "1"*--"1" HealthBar : has
+PNJ "1"*--"1" path : has
+(PNJ, path) ... HealthBar
+
+PNJ <|--- LightEnemy
+PNJ <|--- HeavyEnemy
+
+grid "1,2,.." o--- "*" Tower
+
+TowerInterface <|-- TowerInterfaceWithClosest
+
+Tower <|-- baseTower
+
+Tower <|-- missileTower
+
+Tower <|-- magicTower
+
+TowerInterfaceWithClosest <|.. missileTower
+TowerInterfaceWithClosest <|.. baseTower
+TowerInterface <|.. magicTower
+
+
+magicTower <|-- magicTower1
+EndBranchTowers <|.. magicTower1
+baseTower <|-- baseTower1
+baseTower <|-- baseTower2
+EndBranchTowers <|.. baseTower1
+EndBranchTowers <|.. baseTower2
+missileTower <|-- missileTower1
+EndBranchTowers <|.. missileTower1
+
+Projectile <|-- Bullet
+Projectile <|-- Missile
+
+baseTower1 -- Bullet
+baseTower2 -- Bullet
+magicTower1 -- Bullet
+
+missileTower1 -- Missile
+
+class Myapp{
+    + root : StackPane
+    + scene : Scene
+}
+
+class MainMenu{
+    - newGame : Button
+    - Button credits : Button
+    - Button Score : Button
+    - VBox layout : VBox
+    - Button backToMenu : Button
+    - TextField pseudota : TextField
+    - music : music
+    - pause : Pause
+    - enter : Button
+    - pseudo : String
+    - creds : Label
+    - root : StackPane
+    "constructor" MainMenu(root : StackPane, gameover : boolean)
+    "constructor" MainMenu(root : StackPane)
+    - setScore()
+    - setCredits()
+    - setBackToMenu()
+    - setActions(button : Button)
+    - launchGame()
+    - addPause(root : StackPane, mainMenu : MainMenu)
+}
+
+class music{
+    - mute : Button
+    - mediaPlayer : MediaPlayer
+    - song : String
+    - muteon : boolean
+    "constructor" music()
+    - setMute(button : Button)
+    + getMute() : button
+}
+
+class Ressources{
+    - vbox : VBox
+    - kills : int
+    - resources : int
+    - score : int
+    - wave : int
+    - level : int
+    - CastleHealth : int
+    - pseudo : String
+    - killsLable : Label
+    - resourcesLable : Label
+    - scoreLable : Label
+    - castleLabel : Label
+    - waveLabel : Label
+    - livesLabel : Label
+    "constructor" Ressources()
+    + update()
+}
+
+class grid{
+    - columns : int
+    - rows : int
+    - grid : GridPane
+    - path : path
+    - towers : ArrayList<Tower>
+    - pnjs : ArrayList<PNJ>
+    - menuBar : menuBar
+    - X : List<Integer>
+    - Y : List<Integer>
+    - X2 : List<Integer>
+    - Y2 : List<Integer>
+    - towers : ArrayList<Tower>
+    - pnjs : ArrayList<PNJ>
+    - stackPanes : ArrayList<StackPane>
+    - panes : ArrayList<Pane>
+    - ressources : Ressources
+    - isPause : boolean
+    - root : StackPane
+    "constructor" grid( menuBar : menuBar, ressources : Ressources, root : StackPane)
+    - setConstraints()
+    - initializePath()
+    + newLevel()
+    - makeContextMenu(pane : StackPane, tower : Tower)
+    - addTower(pane : StackPane, x : int, y : int)
+    - setPath()
+    - determineTower(CenterX : double, CenterY : double, gridPosX : int, gridPosY : int) : Tower
+    - addPane( grid : GridPane, i : int, j : int, menuBar : menuBar )
+    + addPNJ( pnj : PNJ )
+    + addTower( tower : Tower )
+    + clearArrays()
+    + addTower(tower : Tower)
+    + removeTower(tower : Tower)
+}
+
+class menuBar{
+    - towerselected : int
+    - towertype : int
+    - towercost : int
+    - menuBar : MenuBar
+    "constructor" menuBar()
+}
+class Pause{
+    - grid grid : grid
+    - pause : Button
+    - pauseOn : boolean
+    "constructor" Pause
+    + makePause(button : Button)
+}
+
+class Waves{
+    - pnjs : ArrayList<PNJ>
+    - wave_num : int
+    - mult_num : int
+    - stackPane : StackPane
+    - grid : grid
+    - labels : Ressources
+    - isGameOver : boolean
+    - timer : Timeline
+    "constructor" Waves(stackPane : StackPane, grid : grid, labels : Ressources)
+    - update()
+    - spawn_wave()
+    - spawn_Light_Enemy()
+    - spawn_Heavy_Enemy()
+    - isNewWave()
+    + setGameOver()
+    + newGame()
+}
+
+class GameOver{
+    "constructor" GameOver(stackPane : StackPane, lables : Ressources)
+}
+
+class Sauvegarde{
+    - nameTop : String
+    - scoreTop : int
+    - listint : ArrayList<Integer>
+    - listname : ArrayList<String>
+    - listComplete : ArrayList<String>
+    - myFile : File
+    "constructor" Sauvegarde()
+    - findTopPlayer()
+    + writeFile(pseudo : String, score : int)
+}
+
+class path{
+    - X : List<Integer>
+    - Y : List<Integer>
+    - X2 : List<Integer>
+    - Y2 : List<Integer>
+    - pathTransition : PathTransition
+    - PNJpath : Path
+    - r : Random
+    - random : int
+    - path12 : int
+    - repositionX : int
+    - repositionY : int
+    - duration : Duration
+    "constructor" path(duration : Duration, ressources : Ressources)
+    "constructor" path( repositionX : double, repositionY : double, path12 : int, duration : Duration, ressources : Ressources)
+    + setNode(node : Node)
+    + newLevel()
+    + size() : int
+}
+
+abstract class PNJ {
+    # health : HealthBar
+    # healthpath : path
+    # isAlive : boolean
+    # path : path
+    # dammage : int
+    # sante : double
+    # duration : Duration
+    # ressources : int
+    # pane : Pane
+    # hitbox : ImageView
+    # spawnx : double
+    # spawny : double
+    # wave : Waves
+    # lables : Ressources
+    # stackPane : StackPane
+    - timer : Timeline
+    "constructor" PNJ(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+    + setPause()
+    + setPlay()
+    + isInvisible() : boolean
+    + update()
+    + isDead() : boolean
+    + doDamage()
+    + removePNJ()
+    + setDead()
+}
+
+class LightEnemy{
+    "constructor" LightEnemy(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+}
+
+class HeavyEnemy{
+    "constructor" HeavyEnemy(stackPane : StackPane, grid : grid, wave : Waves, labels : Ressources)
+}
+
+
+class HealthBar{
+    - rectInt : Rectangle
+    - innerWidth : double
+    "constructor" HealthBar(path : path)
+    + getDammage(value : double)
+    + getHealth() : double
+}
+
+interface TowerInterface <<I>> {
+    isInRange() : boolean
+    findClosestEnemy()
+    setRotation()
+    update()
+    upgrade()
+    towerDead()
+    fire()
+}
+
+interface TowerInterfaceWithClosest <<I>> {
+    isInRange() : boolean
+    findClosestEnemy()
+    setRotation()
+    update()
+    upgrade()
+    towerDead()
+    fire()
+}
+
+abstract class Tower{
+    # distance : double
+    # dammage : double
+    # positionX : double
+    # positionY : double
+    # gridPosX : int
+    # gridPosY : int
+    # base : ImageView
+    # canon : ImageView
+    # canonUp : ArrayList<ImageView>
+    # upgraded : int
+    # pnjs : ArrayList<PNJ>
+    # rotation : double
+    # towerDead : boolean
+    # isPause : boolean
+    # root : StackPane
+    # projectiles : ArrayList<Projectile>
+    # closestPnj : PNJ
+    # pnjsInRadius : ArrayList<PNJ>
+    "constructor" Tower(pnjs : ArrayList<PNJ>, positionX : double, positionY : double, gridPosX : int
+    , gridPosY : int, root : StackPane, bool : boolean)
+    + towerDead()
+    + clearProjectile()
+    + clearPNJ()
+    + upgrade()
+    + costUpgrade()
+}
+
+
+abstract class baseTower{
+    # base_damage : double
+    # dammage : double
+    # rate_of_fire : double
+    # range : double
+    # projectileColor : Color
+    - closestPnj : PNJ
+    "constructor" baseTower(ArrayList<PNJ> pnjs, double positionX, double positionY, int gridPosX
+        , int gridPosY, StackPane root, boolean bool)
+    + findClosestEnemy()
+    + setRotation()
+    + isInRange() : boolean
+    + fire()
+    + update()
+    + towerDead()
+}
+
+abstract class missileTower{
+    # base_damage : double
+    # dammage : double
+    # rate_of_fire : int
+    # indicator : int
+    # range : double
+    # blastRadius : double
+    - closestPnj : PNJ
+    # pnjsInRadius : ArrayList<PNJ>
+    # missiles : ArrayList<ImageView>
+    "constructor" missileTower(ArrayList<PNJ> pnjs, double positionX, double positionY, int gridPosX
+        , int gridPosY, StackPane root, boolean bool)
+    + isInRange() : boolean
+    + findClosestEnemy()
+    + setRotation()
+    + towerDead()
+    + update()
+    + fire()
+    + inBlastRadius()
+    - clearBlastRadius()
+}
+
+abstract class magicTower{
+    # base_damage : double
+    # dammage : double
+    # rate_of_fire : double
+    - rate : int
+    # rate_max : int
+    # max_pnj : int
+    # range : double
+    # projectileColor : Color
+    "constructor" magicTower(pnjs : ArrayList<PNJ>, positionX : double, positionY : double, gridPosX : int
+    , gridPosY : int, root : StackPane, bool : boolean)
+    + distanceEnemy(PNJ pnj)
+    + isInRange(PNJ pnj) : boolean
+    + fire()
+    + setRotation()
+    + upgrade()
+    + towerDead()
+    # update()
+
+}
+
+class magicTower1{
+    "constructor" magicTower(pnjs : ArrayList<PNJ>, positionX : double, positionY : double, gridPosX : int
+        , gridPosY : int, root : StackPane, bool : boolean)
+    + costUpgrade() : int
+    + upgrade()
+}
+
+class missileTower1{
+    "constructor" missileTower1(ArrayList<PNJ> pnjs, double positionX, double positionY, int gridPosX
+        , int gridPosY, StackPane root, boolean bool)
+    + upgrade()
+    + costUpgrade() : int
+}
+
+class baseTower1{
+    "constructor" baseTower1(pnjs : ArrayList<PNJ>, positionX : double, positionY : double, gridPosX : int
+            , gridPosY : int, root : StackPane, bool : boolean)
+    + costUpgrade() : int
+    + upgrade()
+}
+
+class baseTower2{
+    "constructor" baseTower2(pnjs : ArrayList<PNJ>, positionX : double, positionY : double, gridPosX : int
+            , gridPosY : int, root : StackPane, bool : boolean)
+    + costUpgrade() : int
+    + upgrade()
+}
+
+interface EndBranchTowers{
+    upgrade()
+    costUpgrade() : int
+}
+
+abstract class Projectile{
+    # posTowX : double
+    # posTowY : double
+    # posPNJX : double
+    # posPNJY : double
+    # trajectoire : Path
+    # animation : PathTransition
+    # distanceParcourue : double
+    # root : StackPane
+    # tower : Tower
+    # bullet : Ellipse
+    "constructor" Projectile(positionX : double, positionY : double, PNJX : double, PNJY : double, root : StackPane, tower : Tower)
+    + setOpacity(i : int)
+    + setRadius(radius : int)
+    + setPause()
+    + setPlay()
+}
+
+class Bullet{
+    - bullet : Ellipse
+    "constructor" Bullet(positionX : double, positionY : double, PNJX : double, PNJY : double, root : StackPane, tower : Tower, color : Color)
+    - update()
+    - distance() : double
+    - distance(finX : double, finY : double) : double
+    - apparition()
+    + setOpacity(i : int)
+}
+
+class Missile{
+    - missile : ImageView
+    "constructor" Missile(positionX : double, positionY : double, PNJX : double, PNJY : double, root : StackPane, tower : Tower, missile : ImageView)
+    + setOpacity(i : int)
+}
+
+class contextMenu{
+    - contextMenu : ContextMenu
+    - ressources : Ressources
+    - canonUp : ImageView
+    - canon : ImageView
+    - base : ImageView
+    - grid : grid
+    - tower : Tower
+    - upgraded : int
+    - upgradeString : String
+    "constructor" contextMenu(grid : grid, tower : Tower, ressources : Ressources, pane : StackPane)
+}
+
+@enduml

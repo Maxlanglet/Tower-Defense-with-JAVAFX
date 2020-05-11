@@ -1,0 +1,35 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+activate Waves
+activate grid
+activate Ressources
+alt isNewWave=true
+    Waves -> grid: clear_arrays()
+    Waves -> grid: spawn_wave()
+    Waves -> PNJ: new PNJs()
+    activate PNJ
+end
+PNJ -> Ressources: doDammage()
+activate Ressources
+deactivate Ressources
+alt ship Health<=0
+PNJ --> Waves: setGameOver()
+deactivate PNJ
+    alt isNewLevel
+        Waves->grid: newLevel()
+        Waves->Ressources: newLevel()
+        activate Ressources
+        deactivate Ressources
+    else !isNewLevel
+        Waves->grid: setGameOver()
+        Waves->GameOver: new GameOver()
+        activate GameOver
+        deactivate Waves
+        grid->grid: clear_arrays()
+        deactivate grid
+    end
+end
+GameOver->Ressources: save()
+deactivate Ressources
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+actor PNJ
+entity Tower
+activate Tower
+activate Ressources
+PNJ --> Tower: isAlive and isVisible
+alt is in Range && !isDead && isVisible
+    Tower -> PNJ: do Dammage
+    PNJ -> PNJ : getDammage
+    alt isDead
+        PNJ -> PNJ: setDead()
+        PNJ --> Tower: removePNJ()
+        destroy PNJ
+    else castle reached
+        PNJ -> Ressources: doDammage()
+        PNJ --> Tower: removePNJ()
+        destroy PNJ
+    end
+end
+
+@enduml

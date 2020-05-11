@@ -1,0 +1,30 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+activate baseTower
+baseTower -> PNJs: findClosest()
+PNJs --> ClosestPNJ: closest
+activate ClosestPNJ
+ClosestPNJ --> baseTower: coordinates
+loop ClosestPNJ isAlive && isClosest && IsinRange
+    baseTower -> baseTower: setRotation()
+    activate baseTower
+    deactivate baseTower
+    alt IsinRange() && !isPause
+        baseTower -> ClosestPNJ: fire()
+        ClosestPNJ -> ClosestPNJ: getDammage()
+        activate ClosestPNJ
+        deactivate ClosestPNJ
+        baseTower -> Bullet: new Projectile
+        activate Bullet
+        deactivate Bullet
+        destroy Bullet
+    end
+    deactivate ClosestPNJ
+    note left of ClosestPNJ
+                   Marque la fin de vie
+                   ou la sortie de la zone d'atteinte
+    end note
+end
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+activate missileTower
+activate PNJs
+missileTower -> PNJs: findClosest()
+PNJs --> ClosestPNJ: closest
+activate ClosestPNJ
+ClosestPNJ --> missileTower: coordinates
+activate missileTower
+deactivate missileTower
+note left of missileTower
+       Toujours dans le rayon de tir
+       car tour a missile
+end note
+alt !isPause
+    missileTower -> ClosestPNJ: fire()
+    loop for PNJs in blast radius
+                ClosestPNJ -> ClosestPNJ: getDammage
+                activate ClosestPNJ
+                deactivate ClosestPNJ
+                deactivate ClosestPNJ
+                note right of ClosestPNJ
+                       Marque la fin de vie d'un PNJ
+                       pas forcement de tous les PNJs dans le rayon
+                end note
+                missileTower -> Missile: new Projectiles
+                activate Missile
+                deactivate Missile
+                destroy Missile
+    end
+end
+@enduml

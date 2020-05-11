@@ -1,0 +1,21 @@
+@startuml
+actor PNJ
+entity Tower
+activate Tower
+activate Ressources
+PNJ --> Tower: isAlive and isVisible
+alt is in Range && !isDead && isVisible
+    Tower -> PNJ: do Dammage
+    PNJ -> PNJ : getDammage
+    alt isDead
+        PNJ -> PNJ: setDead()
+        PNJ --> Tower: removePNJ()
+        destroy PNJ
+    else castle reached
+        PNJ -> Ressources: doDammage()
+        PNJ --> Tower: removePNJ()
+        destroy PNJ
+    end
+end
+
+@enduml

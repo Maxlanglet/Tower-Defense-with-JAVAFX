@@ -1,0 +1,31 @@
+@startuml
+'Ces diagrammes n'ont pas été généré automatiquement mais c'est moi même qui ait coder '
+'ces diagrammes'
+activate magicTower
+activate PNJs
+magicTower -> PNJs: findClosests()
+PNJs --> ClosestPNJs: closest
+activate ClosestPNJs
+ClosestPNJs -> magicTower: getCoordinates
+activate magicTower
+deactivate magicTower
+loop for 5 or more PNJs alive
+    alt IsinRange() && !isPause
+        magicTower -> ClosestPNJs: fire()
+        ClosestPNJs -> ClosestPNJs: getDammage()
+        activate ClosestPNJs
+        deactivate ClosestPNJs
+        magicTower -> Bullets: new Projectiles
+        activate Bullets
+        deactivate Bullets
+        destroy Bullets
+    end
+    deactivate ClosestPNJs
+    note left of ClosestPNJs
+           Marque la fin de vie d'un PNJ
+           ou la sortie de la zone d'atteinte
+           pas forcement de tous les PNJs proche
+       end note
+end
+
+@enduml
